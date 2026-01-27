@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import type { Project } from "@/lib/mock-data";
+import type { Project } from "@/lib/types";
 
 interface ProjectCardProps {
   project: Project;
