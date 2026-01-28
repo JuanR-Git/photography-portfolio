@@ -1,14 +1,61 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useMemo } from "react";
 import { motion, useInView } from "framer-motion";
 import { FilterBar } from "@/components/projects/FilterBar";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { useProjects } from "@/lib/hooks/useProjects";
 import { mockProjects } from "@/lib/mock-data";
+import { getProjectCategory, type ProjectCategory } from "@/lib/types";
 
 export default function ProjectsPage() {
   const headerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headerRef, { once: true, margin: "-50px" });
+
+  const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
+
+  // Fetch projects from API
+  const { data: apiProjects, isLoading, error } = useProjects();
+
+  // Use API data if available, otherwise fall back to mock data
+  const projects = apiProjects || mockProjects;
+
+  // Filter projects by category
+  const filteredProjects = useMemo(() => {
+    if (activeFilter === "all") return projects;
+
+    return projects.filter((project) => {
+      // Use category from project if available, otherwise derive from slug
+      const category = project.category
+        ? project.category.toLowerCase()
+        : getProjectCategory(project.slug);
+
+      // Match category
+      if (activeFilter === "wedding") {
+        return (
+          category.includes("wedding") || category.includes("engagement")
+        );
+      }
+      if (activeFilter === "portrait") {
+        return category.includes("portrait") || category.includes("people");
+      }
+      if (activeFilter === "event") {
+        return (
+          category.includes("event") ||
+          category.includes("party") ||
+          category.includes("birthday")
+        );
+      }
+      if (activeFilter === "commercial") {
+        return (
+          category.includes("commercial") ||
+          category.includes("product") ||
+          category.includes("brand")
+        );
+      }
+      return true;
+    });
+  }, [projects, activeFilter]);
 
   return (
     <div className="min-h-screen pt-28 pb-16">
@@ -29,14 +76,42 @@ export default function ProjectsPage() {
         </motion.div>
 
         {/* Filter Bar */}
-        <FilterBar />
+        <FilterBar
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
+
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-24">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-foreground" />
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && !apiProjects && (
+          <div className="text-center py-12">
+            <p className="text-muted">
+              Unable to load projects from server. Showing cached content.
+            </p>
+          </div>
+        )}
 
         {/* Projects Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-12">
-          {mockProjects.map((project, index) => (
-            <ProjectCard key={project.slug} project={project} index={index} />
-          ))}
-        </div>
+        {!isLoading && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 mt-12">
+            {filteredProjects.map((project, index) => (
+              <ProjectCard key={project.slug} project={project} index={index} />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && filteredProjects.length === 0 && (
+          <div className="text-center py-16">
+            <p className="text-muted">No projects found in this category.</p>
+          </div>
+        )}
       </div>
     </div>
   );
