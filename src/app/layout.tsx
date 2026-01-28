@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import { Playfair_Display, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { QueryProvider } from "@/components/providers/QueryProvider";
 
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -20,15 +20,16 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Carlos Reyes | Photography Portfolio",
+  title: "Carlos Reyes | Commercial & Portrait Photography",
   description:
-    "Full-stack designer & creative technologist capturing moments that tell stories. Based in New York City.",
+    "Professional photography services for retail, marketing, headshots, and events. Capturing moments that elevate your brand.",
   keywords: [
     "photography",
-    "portfolio",
+    "commercial photography",
+    "portrait photography",
     "Carlos Reyes",
     "photographer",
-    "New York",
+    "Toronto",
   ],
 };
 
@@ -38,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+    <html lang="en" className={`${playfair.variable} ${dmSans.variable}`}>
       <body className="font-body antialiased">
         <QueryProvider>
           <Navbar />
