@@ -144,7 +144,7 @@ async function getProjectCover(folderId: string): Promise<string> {
   }
 
   // No images found, return placeholder
-  return "/placeholder-cover.jpg";
+  return "/placeholder-cover.svg";
 }
 
 // Get project by slug
@@ -174,7 +174,7 @@ export async function getProjectBySlug(slug: string): Promise<ProjectDetail | nu
         id: file.id!,
         name: parsed.baseName,
         url: `/api/media/${file.id}`,
-        thumbUrl: `/api/media/${file.id}?thumb=true`,
+        thumbUrl: `/api/media/${file.id}`,
         order: parsed.order,
       };
     })
@@ -183,7 +183,7 @@ export async function getProjectBySlug(slug: string): Promise<ProjectDetail | nu
 
   // Get banner image (use cover or first image)
   let bannerUrl = project.coverUrl;
-  if (bannerUrl === "/placeholder-cover.jpg" && images.length > 0) {
+  if (bannerUrl === "/placeholder-cover.svg" && images.length > 0) {
     bannerUrl = images[0].url;
   }
 
