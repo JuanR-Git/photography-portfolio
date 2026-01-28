@@ -72,8 +72,8 @@ export function ImageModal({
           className="fixed inset-0 z-50 flex items-center justify-center"
           onClick={onClose}
         >
-          {/* Dark Backdrop */}
-          <div className="absolute inset-0 bg-modal-bg" />
+          {/* Dark Backdrop - Translucent Black */}
+          <div className="absolute inset-0 bg-black/90" />
 
           {/* Close Button */}
           <button
