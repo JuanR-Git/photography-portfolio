@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, useState, useMemo } from "react";
+import { useRef, useState, useMemo, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { motion, useInView } from "framer-motion";
 import { FilterBar } from "@/components/projects/FilterBar";
 import { ProjectCard } from "@/components/projects/ProjectCard";
@@ -11,8 +12,36 @@ import { getProjectCategory, type ProjectCategory } from "@/lib/types";
 export default function ProjectsPage() {
   const headerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headerRef, { once: true, margin: "-50px" });
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const [activeFilter, setActiveFilter] = useState<ProjectCategory>("all");
+  // Get initial filter from URL query param
+  const filterParam = searchParams.get("filter") as ProjectCategory | null;
+  const [activeFilter, setActiveFilter] = useState<ProjectCategory>(
+    filterParam && ["all", "retail", "marketing", "headshots", "events"].includes(filterParam)
+      ? filterParam
+      : "all"
+  );
+
+  // Update URL when filter changes
+  const handleFilterChange = (category: ProjectCategory) => {
+    setActiveFilter(category);
+    if (category === "all") {
+      router.push("/projects", { scroll: false });
+    } else {
+      router.push(`/projects?filter=${category}`, { scroll: false });
+    }
+  };
+
+  // Sync with URL changes
+  useEffect(() => {
+    const param = searchParams.get("filter") as ProjectCategory | null;
+    if (param && ["all", "retail", "marketing", "headshots", "events"].includes(param)) {
+      setActiveFilter(param);
+    } else if (!param) {
+      setActiveFilter("all");
+    }
+  }, [searchParams]);
 
   // Fetch projects from API
   const { data: apiProjects, isLoading, error } = useProjects();
@@ -31,34 +60,24 @@ export default function ProjectsPage() {
         : getProjectCategory(project.slug);
 
       // Match category
-      if (activeFilter === "wedding") {
-        return (
-          category.includes("wedding") || category.includes("engagement")
-        );
+      if (activeFilter === "retail") {
+        return category === "retail" || category.includes("retail") || category.includes("store");
       }
-      if (activeFilter === "portrait") {
-        return category.includes("portrait") || category.includes("people");
+      if (activeFilter === "marketing") {
+        return category === "marketing" || category.includes("marketing") || category.includes("social") || category.includes("brand");
       }
-      if (activeFilter === "event") {
-        return (
-          category.includes("event") ||
-          category.includes("party") ||
-          category.includes("birthday")
-        );
+      if (activeFilter === "headshots") {
+        return category === "headshots" || category.includes("headshot") || category.includes("portrait");
       }
-      if (activeFilter === "commercial") {
-        return (
-          category.includes("commercial") ||
-          category.includes("product") ||
-          category.includes("brand")
-        );
+      if (activeFilter === "events") {
+        return category === "events" || category.includes("event") || category.includes("wedding") || category.includes("party");
       }
       return true;
     });
   }, [projects, activeFilter]);
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-28 pb-16 bg-background">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Page Header */}
         <motion.div
@@ -68,8 +87,8 @@ export default function ProjectsPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-light tracking-wide text-foreground">
-            All Projects
+          <h1 className="font-heading text-4xl md:text-5xl lg:text-6xl font-semibold tracking-wide text-foreground">
+            Portfolio
           </h1>
           <p className="text-muted mt-4 text-lg">2017 - Present</p>
           <p className="text-muted mt-2 italic">Snapshots through the Years</p>
@@ -78,13 +97,13 @@ export default function ProjectsPage() {
         {/* Filter Bar */}
         <FilterBar
           activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
+          onFilterChange={handleFilterChange}
         />
 
         {/* Loading State */}
         {isLoading && (
           <div className="flex justify-center items-center py-24">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-foreground" />
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-accent" />
           </div>
         )}
 

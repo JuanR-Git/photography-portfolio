@@ -5,10 +5,10 @@ import type { ProjectCategory } from "@/lib/types";
 
 const categories: { id: ProjectCategory; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "wedding", label: "Weddings" },
-  { id: "portrait", label: "Portraits" },
-  { id: "event", label: "Events" },
-  { id: "commercial", label: "Commercial" },
+  { id: "retail", label: "Retail" },
+  { id: "marketing", label: "Marketing & Social" },
+  { id: "headshots", label: "Headshots" },
+  { id: "events", label: "Events" },
 ];
 
 interface FilterBarProps {
@@ -27,7 +27,7 @@ export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
             onClick={() => onFilterChange(category.id)}
             className={`text-sm font-medium whitespace-nowrap transition-all duration-300 ${
               activeFilter === category.id
-                ? "text-foreground"
+                ? "text-accent"
                 : "text-muted hover:text-foreground"
             }`}
           >
@@ -35,7 +35,7 @@ export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
             {activeFilter === category.id && (
               <motion.div
                 layoutId="category-underline"
-                className="h-px bg-foreground mt-1"
+                className="h-0.5 bg-accent mt-1"
                 initial={false}
                 transition={{ type: "spring", stiffness: 500, damping: 30 }}
               />
