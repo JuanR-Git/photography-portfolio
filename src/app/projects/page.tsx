@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useMemo, useEffect } from "react";
+import { Suspense, useRef, useState, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { motion, useInView } from "framer-motion";
 import { FilterBar } from "@/components/projects/FilterBar";
@@ -10,6 +10,18 @@ import { mockProjects } from "@/lib/mock-data";
 import { getProjectCategory, type ProjectCategory } from "@/lib/types";
 
 export default function ProjectsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen pt-28 pb-16 bg-background flex justify-center items-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-muted border-t-accent" />
+      </div>
+    }>
+      <ProjectsContent />
+    </Suspense>
+  );
+}
+
+function ProjectsContent() {
   const headerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headerRef, { once: true, margin: "-50px" });
   const router = useRouter();

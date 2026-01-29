@@ -26,24 +26,44 @@ export interface ProjectDetail {
   videos: string[];
 }
 
-// Category type for filtering
-export type ProjectCategory = "all" | "wedding" | "portrait" | "event" | "commercial";
+// Category type for filtering - matching service categories + additional filters
+export type ProjectCategory =
+  | "all"
+  | "retail"
+  | "marketing"
+  | "headshots"
+  | "events"
+  | "urban"
+  | "people"
+  | "food";
+
+// Sort options
+export type SortOption = "newest" | "oldest";
 
 // Helper to extract category from project title/slug
 export function getProjectCategory(slug: string): ProjectCategory {
   const lowerSlug = slug.toLowerCase();
 
-  if (lowerSlug.includes("wedding") || lowerSlug.includes("engagement")) {
-    return "wedding";
+  if (lowerSlug.includes("retail") || lowerSlug.includes("store") || lowerSlug.includes("shop")) {
+    return "retail";
   }
-  if (lowerSlug.includes("portrait") || lowerSlug.includes("headshot")) {
-    return "portrait";
+  if (lowerSlug.includes("marketing") || lowerSlug.includes("social") || lowerSlug.includes("brand") || lowerSlug.includes("product")) {
+    return "marketing";
   }
-  if (lowerSlug.includes("event") || lowerSlug.includes("party") || lowerSlug.includes("corporate")) {
-    return "event";
+  if (lowerSlug.includes("headshot") || lowerSlug.includes("portrait") || lowerSlug.includes("corporate")) {
+    return "headshots";
   }
-  if (lowerSlug.includes("commercial") || lowerSlug.includes("product") || lowerSlug.includes("brand")) {
-    return "commercial";
+  if (lowerSlug.includes("event") || lowerSlug.includes("party") || lowerSlug.includes("wedding") || lowerSlug.includes("birthday")) {
+    return "events";
+  }
+  if (lowerSlug.includes("urban") || lowerSlug.includes("street") || lowerSlug.includes("city")) {
+    return "urban";
+  }
+  if (lowerSlug.includes("people") || lowerSlug.includes("couple") || lowerSlug.includes("close")) {
+    return "people";
+  }
+  if (lowerSlug.includes("food") || lowerSlug.includes("restaurant") || lowerSlug.includes("cuisine")) {
+    return "food";
   }
 
   return "all";
