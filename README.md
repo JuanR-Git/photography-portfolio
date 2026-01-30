@@ -1,4 +1,7 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Photography-Portfolio
+This is the working directory for my photography portfolio template. I am using this project to gain a deeper understanding of UI/UX design principles. I am also using this project as a learning experience in using claude code to bring my detailed requirements to life.
+
+Demo: [link](https://photography-portfolio-two-omega.vercel.app/)
 
 ## Getting Started
 
